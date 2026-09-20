@@ -208,6 +208,10 @@ typedef struct _VESC_Status_11
 
 } VESC_Status_11;
 
+/// <summary>
+/// Status 12 frame (note: non-standard IMU quaternion, W, X, Y, Z).
+/// Normalize the quaternion and convert to VESC_RawFrame before sending!
+/// </summary>
 typedef struct _VESC_Status_12
 {
     VESC_Id_t vescID;

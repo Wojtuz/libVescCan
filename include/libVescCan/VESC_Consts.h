@@ -178,9 +178,10 @@ typedef enum VESC_Command_enum
 	VESC_COMMAND_MUX_CONFIG_1 = 33,
 	VESC_COMMAND_MUX_CAMSEL = 34,
 	VESC_COMMAND_MUX_STATUS = 35,
-	VESC_COMMAND_STATUS_12 = 42,
 	// cubemars
 	VESC_COMMAND_STATUS_11 = 41,
+	// non standard IMU frame
+	VESC_COMMAND_STATUS_12 = 42,
 } VESC_Command;
 
 typedef enum VESC_SetOrigin_Command_Enum
@@ -384,12 +385,6 @@ enum _VESC_offsetIdx_Status_11_enum
     _VESC_OFFSETIDX_STATUS_11_ERRORCODE,
 };
 
-//****
-// offsets for conversions to RawFrame
-//****
-
-#define _VESC_OFFSET_COMMANDFRAME 0
-
 enum _VESC_offsetIdx_Status_12_enum
 {
     _VESC_OFFSETIDX_STATUS_12_W = 0,
@@ -398,13 +393,11 @@ enum _VESC_offsetIdx_Status_12_enum
     _VESC_OFFSETIDX_STATUS_12_Z,
 };
 
-static const int _VESC_offset_Status_12[] =
-{
-    0,
-    sizeof(VESC_Status_12_w_t),
-    sizeof(VESC_Status_12_w_t) + sizeof(VESC_Status_12_x_t),
-    sizeof(VESC_Status_12_w_t) + sizeof(VESC_Status_12_x_t) + sizeof(VESC_Status_12_y_t),
-};
+//****
+// offsets for conversions to RawFrame
+//****
+
+#define _VESC_OFFSET_COMMANDFRAME 0
 
 static const int _VESC_offset_PosSpeedLoop[] =
 {
@@ -511,6 +504,14 @@ static const int _VESC_offset_Status_11[] =
 	sizeof(VESC_Status_11_position_t) + sizeof(VESC_Status_11_speed_t),
 	sizeof(VESC_Status_11_position_t) + sizeof(VESC_Status_11_speed_t) + sizeof(VESC_Status_11_current_t),
 	sizeof(VESC_Status_11_position_t) + sizeof(VESC_Status_11_speed_t) + sizeof(VESC_Status_11_current_t) + sizeof(VESC_Status_11_motorTemp_t),
+};
+
+static const int _VESC_offset_Status_12[] =
+{
+    0,
+    sizeof(VESC_Status_12_w_t),
+    sizeof(VESC_Status_12_w_t) + sizeof(VESC_Status_12_x_t),
+    sizeof(VESC_Status_12_w_t) + sizeof(VESC_Status_12_x_t) + sizeof(VESC_Status_12_y_t),
 };
 
 #endif // VESC_Consts_h_
