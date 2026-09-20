@@ -76,6 +76,11 @@ typedef int16_t VESC_Status_11_current_t;
 typedef int8_t VESC_Status_11_motorTemp_t;
 typedef int8_t VESC_Status_11_errorCode_t;
 
+typedef int16_t VESC_Status_12_w_t;
+typedef int16_t VESC_Status_12_x_t;
+typedef int16_t VESC_Status_12_y_t;
+typedef int16_t VESC_Status_12_z_t;
+
 
 //****
 // dlen
@@ -95,6 +100,7 @@ typedef int8_t VESC_Status_11_errorCode_t;
 #define VESC_CAN_MUX_CAMSEL_DLEN 1
 #define VESC_CAN_MUX_STATUS_DLEN 7
 #define VESC_CAN_STATUS_11_DLEN 8
+#define VESC_CAN_STATUS_12_DLEN 8
 
 //****
 // bitlen
@@ -172,6 +178,7 @@ typedef enum VESC_Command_enum
 	VESC_COMMAND_MUX_CONFIG_1 = 33,
 	VESC_COMMAND_MUX_CAMSEL = 34,
 	VESC_COMMAND_MUX_STATUS = 35,
+	VESC_COMMAND_STATUS_12 = 42,
 	// cubemars
 	VESC_COMMAND_STATUS_11 = 41,
 } VESC_Command;
@@ -260,6 +267,11 @@ typedef enum VESC_SetOrigin_Command_Enum
 #define VESC_SCALE_STATUS_11_CURRENT 100
 #define VESC_SCALE_STATUS_11_MOTORTEMP 1
 #define VESC_SCALE_STATUS_11_ERRORCODE VESC_SCALE_NA
+
+#define VESC_SCALE_STATUS_12_W 32767
+#define VESC_SCALE_STATUS_12_X 32767
+#define VESC_SCALE_STATUS_12_Y 32767
+#define VESC_SCALE_STATUS_12_Z 32767
 
 //****
 // enum for offsets
@@ -377,6 +389,22 @@ enum _VESC_offsetIdx_Status_11_enum
 //****
 
 #define _VESC_OFFSET_COMMANDFRAME 0
+
+enum _VESC_offsetIdx_Status_12_enum
+{
+    _VESC_OFFSETIDX_STATUS_12_W = 0,
+    _VESC_OFFSETIDX_STATUS_12_X,
+    _VESC_OFFSETIDX_STATUS_12_Y,
+    _VESC_OFFSETIDX_STATUS_12_Z,
+};
+
+static const int _VESC_offset_Status_12[] =
+{
+    0,
+    sizeof(VESC_Status_12_w_t),
+    sizeof(VESC_Status_12_w_t) + sizeof(VESC_Status_12_x_t),
+    sizeof(VESC_Status_12_w_t) + sizeof(VESC_Status_12_x_t) + sizeof(VESC_Status_12_y_t),
+};
 
 static const int _VESC_offset_PosSpeedLoop[] =
 {

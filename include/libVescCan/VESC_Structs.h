@@ -208,6 +208,15 @@ typedef struct _VESC_Status_11
 
 } VESC_Status_11;
 
+typedef struct _VESC_Status_12
+{
+    VESC_Id_t vescID;
+    float w;
+    float x;
+    float y;
+    float z;
+} VESC_Status_12;
+
 /// <summary>
 /// Mux Config 1 frame (note: camera/mux frame)
 /// Convert to VESC_RawFrame before sending!

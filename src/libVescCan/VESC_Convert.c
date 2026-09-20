@@ -3,6 +3,58 @@
 #include "libVescCan/VESC_Structs.h"
 #include <libVescCan/VESC_Convert.h>
 
+bool VESC_convertStatus12ToRaw(VESC_RawFrame* out, const VESC_Status_12* in)
+{
+	if (out == NULL || in == NULL)
+		return false;
+
+	const float components[] = { in->w, in->x, in->y, in->z };
+	const float scales[] = { VESC_SCALE_STATUS_12_W, VESC_SCALE_STATUS_12_X,
+		VESC_SCALE_STATUS_12_Y, VESC_SCALE_STATUS_12_Z };
+	for (unsigned int i = 0; i < 4; ++i)
+		if (!(components[i] >= -1.0f && components[i] <= 1.0f))
+			return false;
+
+	out->vescID = in->vescID;
+	out->command = VESC_COMMAND_STATUS_12;
+	out->_reserved = VESC_CAN_EXTID_FLAG;
+	out->can_dlc = VESC_CAN_STATUS_12_DLEN;
+	for (unsigned int i = 0; i < 4; ++i)
+	{
+		const float scaled = components[i] * scales[i];
+		const int16_t encoded = (int16_t)(scaled + (scaled >= 0.0f ? 0.5f : -0.5f));
+		const uint16_t bits = (uint16_t)encoded;
+		const int offset = _VESC_offset_Status_12[i];
+		out->rawData[offset] = (uint8_t)(bits >> 8);
+		out->rawData[offset + 1] = (uint8_t)bits;
+	}
+	return true;
+}
+
+bool VESC_convertRawToStatus12(VESC_Status_12* out, const VESC_RawFrame* in)
+{
+	if (out == NULL || in == NULL || in->command != VESC_COMMAND_STATUS_12 ||
+		in->can_dlc != VESC_CAN_STATUS_12_DLEN)
+		return false;
+
+	float components[4];
+	const float scales[] = { VESC_SCALE_STATUS_12_W, VESC_SCALE_STATUS_12_X,
+		VESC_SCALE_STATUS_12_Y, VESC_SCALE_STATUS_12_Z };
+	for (unsigned int i = 0; i < 4; ++i)
+	{
+		const int offset = _VESC_offset_Status_12[i];
+		const uint16_t bits = ((uint16_t)in->rawData[offset] << 8) | in->rawData[offset + 1];
+		const int32_t value = bits >= 0x8000u ? (int32_t)bits - 0x10000 : (int32_t)bits;
+		components[i] = (float)value / scales[i];
+	}
+	out->vescID = in->vescID;
+	out->w = components[_VESC_OFFSETIDX_STATUS_12_W];
+	out->x = components[_VESC_OFFSETIDX_STATUS_12_X];
+	out->y = components[_VESC_OFFSETIDX_STATUS_12_Y];
+	out->z = components[_VESC_OFFSETIDX_STATUS_12_Z];
+	return true;
+}
+
 bool VESC_convertCmdToRaw(VESC_RawFrame* out, const VESC_CommandFrame* in)
 {
 	switch (in->command)
